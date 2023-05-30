@@ -11,5 +11,11 @@
     <h1>Hello World!</h1>
     <h4>Welcome, {{ first_name }}!</h4>
 
+    <ul>
+        {% for country in countries %}
+            <li>{{ country }}</li>
+        {% endfor %}
+    </ul>
+
 </body>
 </html>

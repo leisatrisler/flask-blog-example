@@ -6,7 +6,8 @@ from flask import render_template
 def index():
     name = 'Brian'
     # name.append('Stanton')
-    return render_template('index.html', first_name=name)
+    countries = ['United States', 'Mexico', 'Canada', 'China', 'Japan', 'France']
+    return render_template('index.html', first_name=name, countries=countries)
 
 @app.route('/test')
 def test():
