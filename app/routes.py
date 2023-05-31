@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from app.forms import SignUpForm
 
 
@@ -21,6 +21,8 @@ def signup():
         email = form.email.data
         password = form.password.data
         print(first_name, last_name, username, email, password)
+        # flash a message saying user has signed up
+        flash(f"{username} has signed up for the blog!", 'danger')
         # Redirect back to the home page
         return redirect(url_for('index'))
     # Send that instance to the html as context
