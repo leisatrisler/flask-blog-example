@@ -22,7 +22,7 @@ def signup():
         password = form.password.data
         print(first_name, last_name, username, email, password)
         # flash a message saying user has signed up
-        flash(f"{username} has signed up for the blog!", 'danger')
+        flash(f"{username} has signed up for the blog!", 'success')
         # Redirect back to the home page
         return redirect(url_for('index'))
     # Send that instance to the html as context
