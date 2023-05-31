@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, redirect, url_for, flash
-from app.forms import SignUpForm
+from app.forms import SignUpForm, LoginForm
 
 
 @app.route('/')
@@ -28,6 +28,19 @@ def signup():
     # Send that instance to the html as context
     return render_template('signup.html', form=form)
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
-    return render_template('login.html')
+    form = LoginForm()
+    if form.validate_on_submit():
+        print('Form Validated!')
+        username = form.username.data
+        password = form.password.data
+        print(username, password)
+        # mimic checking credentials
+        if username != 'brians' or password != 'abc123':
+            flash('Invalid username and/or email', 'danger')
+            return redirect(url_for('login'))
+        else:
+            flash(f'{username} has successfully logged in', 'success')
+            return redirect(url_for('index'))
+    return render_template('login.html', form=form)
