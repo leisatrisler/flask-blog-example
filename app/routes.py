@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template
+from flask import render_template, redirect, url_for
 from app.forms import SignUpForm
 
 
@@ -7,10 +7,22 @@ from app.forms import SignUpForm
 def index():
     return render_template('index.html')
 
-@app.route('/signup')
+@app.route('/signup', methods=["GET", "POST"])
 def signup():
     # Create an instance of the SignUpForm class
     form = SignUpForm()
+    # Check if the request is POST and the form is valid
+    if form.validate_on_submit():
+        print('HOORAY OUR FORM IS VALIDATED!')
+        # If valid, get the data from the form
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+        print(first_name, last_name, username, email, password)
+        # Redirect back to the home page
+        return redirect(url_for('index'))
     # Send that instance to the html as context
     return render_template('signup.html', form=form)
 
