@@ -70,8 +70,15 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/create')
+@app.route('/create', methods=["GET", "POST"])
 @login_required
 def create_post():
     form = PostForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        image_url = form.image_url.data
+        print(title, body, image_url)
+        flash('You have filled out the form!', 'success')
+        return redirect(url_for('index'))
     return render_template('create.html', form=form)
