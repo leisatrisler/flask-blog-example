@@ -1,5 +1,6 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash
+from flask_login import login_user
 from app.forms import SignUpForm, LoginForm
 from app.models import User
 
@@ -52,6 +53,8 @@ def login():
         user = db.session.execute(db.select(User).where(User.username==username)).scalars().one_or_none()
         # If there is a user AND the password matches that user's hashed password
         if user is not None and user.check_password(password):
+            # log the user in via login_user function
+            login_user(user)
             flash(f'{username} has successfully logged in', 'success')
             return redirect(url_for('index'))
         else:

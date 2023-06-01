@@ -4,7 +4,11 @@
 
 {% block header %}
     <h1>Welcome to the Kekambas Blog</h1>
-    <h5>Please Sign Up or Log In to use the Blog</h5>
+    {% if current_user.is_authenticated %}
+        <h5>Hello {{ current_user.username }}</h5>
+    {% else %}
+        <h5>Please Sign Up or Log In to use the Blog</h5>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
