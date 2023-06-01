@@ -1,8 +1,8 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from app.forms import SignUpForm, LoginForm, PostForm
-from app.models import User
+from app.models import User, Post
 
 
 @app.route('/')
@@ -78,7 +78,12 @@ def create_post():
         title = form.title.data
         body = form.body.data
         image_url = form.image_url.data
-        print(title, body, image_url)
-        flash('You have filled out the form!', 'success')
+        print(title, body, image_url, current_user.id)
+        # Create an instance of Post with form title and body and the logged in user's id
+        new_post = Post(title=title, body=body, user_id=current_user.id)
+        # Add the new post to the database
+        db.session.add(new_post)
+        db.session.commit()
+        flash(f'{new_post.title} has been published!', 'success')
         return redirect(url_for('index'))
     return render_template('create.html', form=form)
