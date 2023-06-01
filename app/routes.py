@@ -48,11 +48,13 @@ def login():
         username = form.username.data
         password = form.password.data
         print(username, password)
-        # mimic checking credentials
-        if username != 'brians' or password != 'abc123':
-            flash('Invalid username and/or password', 'danger')
-            return redirect(url_for('login'))
-        else:
+        # Check to see if there is a user with that username
+        user = db.session.execute(db.select(User).where(User.username==username)).scalars().one_or_none()
+        # If there is a user AND the password matches that user's hashed password
+        if user is not None and user.check_password(password):
             flash(f'{username} has successfully logged in', 'success')
             return redirect(url_for('index'))
+        else:
+            flash('Invalid username and/or password', 'danger')
+            return redirect(url_for('login'))
     return render_template('login.html', form=form)
