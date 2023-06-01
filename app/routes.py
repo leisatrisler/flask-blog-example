@@ -38,7 +38,7 @@ def login():
         print(username, password)
         # mimic checking credentials
         if username != 'brians' or password != 'abc123':
-            flash('Invalid username and/or email', 'danger')
+            flash('Invalid username and/or password', 'danger')
             return redirect(url_for('login'))
         else:
             flash(f'{username} has successfully logged in', 'success')

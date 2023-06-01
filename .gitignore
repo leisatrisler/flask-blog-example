@@ -3,3 +3,6 @@ venv/
 
 # Also ignore the __pycache__
 __pycache__/
+
+# Hide the .env file because that is where we keep our secrets, keys, etc.
+.env
