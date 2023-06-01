@@ -15,6 +15,10 @@ migrate = Migrate(app, db)
 
 # Create an instance of the LoginManager which will handle all login related things
 login = LoginManager(app)
+# Set the login view
+login.login_view = 'login'
+# login.login_message = 'Hey I need to know who you are before you do that!'
+login.login_message_category = 'warning'
 
 # import all of the routes from the routes file and models from the models file into the current package
 from app import routes, models
