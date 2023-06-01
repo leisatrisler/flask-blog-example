@@ -9,5 +9,5 @@ app.config.from_object(Config)
 # Create an instance of SQLAlchemy to connect our app to the database
 db = SQLAlchemy(app)
 
-# import all of the routes from the routes file into the current package
-from app import routes
+# import all of the routes from the routes file and models from the models file into the current package
+from app import routes, models
