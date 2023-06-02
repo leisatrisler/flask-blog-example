@@ -17,20 +17,47 @@
         <div class="col-12 col-lg-8 order-1 order-lg-0">
             
             <!-- Post Display -->
+            {% for post in posts %}
             <div class="card mt-3 bg-primary-subtle border-danger-subtle">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        <img src="https://picsum.photos/500" alt="random" class="card-img-top p-3">
+                        <img src="{{ post.image_url }}" alt="random" class="card-img-top p-3">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h6 class="card-subtle">May 31, 2023</h6>
-                            <h5 class="card-title">Post Title</h5>
-                            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt aliquam necessitatibus aperiam magni vero maiores mollitia incidunt rerum minima iste, eum culpa nostrum. Sunt, soluta quisquam provident labore modi magnam.</p>
+                            <h6 class="card-subtle">{{ post.date_created.strftime('%A %b %d, %Y at %I:%M%p') }}</h6>
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <h6 class="card-subtle">By: {{post.author.username }}</h6>
+                            <p class="card-text">{{ post.body }}</p>
+                            {% if post.author == current_user %}
+                                <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-success">Edit Post</a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePostModal-{{ post.id }}">
+                                    Delete Post
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="deletePostModal-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Delete {{ post.title }}?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete {{ post.title }}? This action cannot be undone.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-danger">Delete Post</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
 
         </div>
 
@@ -54,3 +81,4 @@
     </div>    
 
 {% endblock %}
+

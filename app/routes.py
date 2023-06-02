@@ -7,7 +7,8 @@ from app.models import User, Post
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    posts = db.session.execute(db.select(Post)).scalars()
+    return render_template('index.html', posts=posts)
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -77,13 +78,62 @@ def create_post():
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
-        image_url = form.image_url.data
+        image_url = form.image_url.data or None
         print(title, body, image_url, current_user.id)
         # Create an instance of Post with form title and body and the logged in user's id
-        new_post = Post(title=title, body=body, user_id=current_user.id)
+        new_post = Post(title=title, body=body, user_id=current_user.id, image_url=image_url)
         # Add the new post to the database
         db.session.add(new_post)
         db.session.commit()
         flash(f'{new_post.title} has been published!', 'success')
         return redirect(url_for('index'))
     return render_template('create.html', form=form)
+
+
+@app.route('/edit/<post_id>', methods=["GET", "POST"])
+@login_required
+def edit_post(post_id):
+    post = db.session.get(Post, post_id)
+    if post is None:
+        flash(f"Post with an ID of {post_id} does not exist", "danger")
+        return redirect(url_for('index'))
+    elif post.author != current_user:
+        flash('You do not have permission to edit this post', 'danger')
+        return redirect(url_for('index'))
+    # Create an instance of the PostForm
+    form = PostForm()
+
+    # If form submitted, update the post
+    if form.validate_on_submit():
+        # update the post with the for data
+        post.title = form.title.data
+        post.body = form.body.data
+        post.image_url = form.image_url.data
+        # Commit to the database
+        db.session.commit()
+        flash(f'{post.title} has been edited.', 'success')
+        return redirect(url_for('index'))
+
+    # Pre-populate the form with the post's data
+    form.title.data = post.title
+    form.body.data = post.body
+    form.image_url.data = post.image_url
+    return render_template('edit.html', form=form, post=post)
+
+
+@app.route('/delete/<post_id>')
+@login_required
+def delete_post(post_id):
+    post = db.session.get(Post, post_id)
+    if post is None:
+        flash(f"Post with an ID of {post_id} does not exist", "danger")
+        return redirect(url_for('index'))
+    elif post.author != current_user:
+        flash('You do not have permission to delete this post', 'danger')
+        return redirect(url_for('index'))
+    
+    db.session.delete(post)
+    db.session.commit()
+    flash(f'{post.title} has been deleted', 'success')
+    return redirect(url_for('index'))
+
